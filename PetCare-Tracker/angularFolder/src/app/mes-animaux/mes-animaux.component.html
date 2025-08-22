@@ -1,0 +1,354 @@
+<nav class="navbar navbar-expand-lg navbar-light border-bottom border-2">
+  <a class="navbar-brand p-left-2">
+    <img
+      src="..\assets\images\logo_PetCare_NoBackground.png"
+      width="65"
+      height="auto"
+      alt=""
+    />
+  </a>
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse half-width" id="collapsibleNavbar">
+    <div class="navbar-nav ms-auto w-50 p-right-2">
+      <a class="nav-item nav-link nav-link-spacing w-25 text-center" routerLink="/tableau-de-bord" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Tableau de bord</a>
+      <a class="nav-item nav-link nav-link-spacing w-25 text-nowrap text-center" routerLink="/mes-animaux" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Mes animaux</a>
+      <a class="nav-item nav-link nav-link-spacing w-25 text-center" routerLink="/mon-compte" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Mon compte</a>
+      <a class="nav-item nav-link"  routerLinkActive="active" (click)="logout()" [routerLinkActiveOptions]="{exact: true}">Quitter</a>
+    </div>
+  </div>
+</nav>
+
+<main class=" container-fluid my-5">
+  <div class="row flex-nowrap justify-content-center w-100 gap-2">
+        <div class=" mb-5 h-75  col-6  position-relative ">
+                <!-- Colonne de gauche : Mes animaux -->
+
+                    <h3 class="border-bottom w-50">Mes animaux</h3>
+                    <div class=" bg-primary rounded-2 shadow-sm p-4  animal-details" >
+                      <div class="list-animals-2 ">
+
+                            <!-- Affichage compagnon -->
+                        <div class="d-flex " *ngFor="let animal of animals">
+                          <div class="bg-white shadow-sm mx-2 square rounded-2">
+                            <img [src]="animal.picture" alt="Image de l'animal" class="w-100 h-100 rounded-2 object-fit-cover">
+                          </div>
+
+                          <div class="bg-white flex-grow-1 rounded-2 shadow-sm d-flex px-4 align-items-center justify-content-between col">
+                            <div class="d-flex flex-column justify-content-center gap-2">
+                              <h5 class="m-0">{{ animal.name }}</h5>
+                              <p class="m-0 text-gray-custom">{{ animal.race }}</p>
+                            </div>
+                            <ng-container *ngIf="!isAdding">
+                              <button class="btn bouton-voir-plus" (click)="showAnimalDetails(animal)">Détails</button>
+                            </ng-container>
+
+
+                          </div>
+                        </div>
+                  </div>
+                  <div class="justify-content-center  mt-4 w-100">
+                  <button class="btn bouton-voir-plus btn-bouton-plus w-100 mt-4 "  (click)="clearInputsAndEnable()">Ajouter un compagnon</button>
+                  </div>
+      </div>
+        </div>
+
+        <!-- Colonne de droite : fiche détaillée -->
+        <div class=" h-75 col-6" >
+            <h3 class="border-bottom w-50">Fiche détaillée</h3>
+            <div class="row mb-5 bg-primary rounded-2 shadow-sm  p-4 animal-details ">
+
+
+                  <!--------------------------------- FORM --------------------------------->
+                  <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
+                    <div class="d-flex flex-column gap-4">
+
+                        <div class="d-flex flex-md-row gap-2">
+                            <div class="bg-white shadow-sm  big-square rounded-2 ">
+                              <img [src]="selectedAnimal?.picture ? selectedAnimal?.picture : '../assets/images/patte.png'" alt="Image de l'animal" class="w-100 h-100 rounded-2 object-fit-cover">
+                            </div>
+                            <div
+                                class="bg-white flex-grow-1 rounded-2 shadow-sm p-4 align-items-center justify-content-between col">
+                                <div class="d-flex flex-column justify-content-center gap-3">
+
+                                  <div class="row align-items-center">
+                                    <label for="name" class="col-sm-4 col-form-label fw-semibold text-black text-nowrap">Nom:</label>
+                                    <div class="col-sm-8 ">
+                                      <input type="text" id="name" class="form-control" placeholder="" formControlName="name" [value]="selectedAnimal?.name"
+                                             [disabled]="!isAddingAnimal">
+                                    </div>
+                                  </div>
+
+                                  <div class="row align-items-center">
+                                    <label for="race" class="col-sm-4 col-form-label fw-semibold text-black text-nowrap">Race:</label>
+                                    <div class="col-sm-8">
+                                      <input type="text" id="race" class="form-control" placeholder="" formControlName="race" [value]="selectedAnimal?.race"
+                                             [disabled]="!isAddingAnimal">
+                                    </div>
+                                  </div>
+
+                                  <div class="row align-items-center">
+                                    <label for="gender" class="col-sm-4 col-form-label fw-semibold text-black text-nowrap">Sexe:</label>
+                                    <div class="col-sm-8">
+                                      <select id="gender" class="form-select" formControlName="gender" [value]="selectedAnimal?.gender" [disabled]="!isAddingAnimal" >
+                                        <option value="" selected>Veuillez sélectionner le sexe</option>
+                                        <option value="Male">Mâle</option>
+                                        <option value="Female">Femelle</option>
+                                      </select>
+                                    </div>
+                                  </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-2 shadow-sm p-4 ">
+                            <div class="d-flex flex-column justify-content-center gap-3">
+                                <h5 class="m-0 text-center pb-2 m-2">Fiche santé</h5>
+                                <div class="d-flex flex-wrap gap-2 justify-content-between flex-column">
+
+                                <div class="d-flex w-100 justify-content-between gap-2">
+                                  <div class="d-flex flex-fill justify-content-between">
+                                    <label for="birthday"
+                                           class="w-25 col-form-label fw-semibold text-black text-nowrap">Date de naissance:</label>
+                                    <div class="w-50">
+                                      <input type="date" id="birthday" class="form-control" placeholder="" formControlName="birthday" [value]="selectedAnimal?.birthday"
+                                             [disabled]="!isAddingAnimal">
+                                    </div>
+                                  </div>
+
+                                  <div class="d-flex">
+                                      <input type="text" id="age" class="form-control" placeholder="" [value]="calculateAge(selectedAnimal?.birthday)"
+                                             disabled>
+                                  </div>
+                                </div>
+
+                                <div class="row align-items-center">
+                                            <label for="weight"
+                                                class="col-sm-4 col-form-label fw-semibold text-black text-nowrap">Poids:</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" id="weight" class="form-control" placeholder="" formControlName="weight" [value]="selectedAnimal?.weight"
+                                                       [disabled]="!isAddingAnimal">
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="row align-items-center">
+                                            <label for="height"
+                                                class="col-sm-4 col-form-label fw-semibold text-black text-nowrap">Taille:</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" id="height" class="form-control" placeholder="" formControlName="height" [value]="selectedAnimal?.height"
+                                                       [disabled]="!isAddingAnimal">
+                                            </div>
+                                        </div>
+
+
+                                        <div class="row align-items-center">
+                                            <label for="healthCondition"
+                                                class="col-sm-4 col-form-label fw-semibold text-black text-nowrap">Condition:
+                                            </label>
+                                            <div class="col-sm-8">
+                                                <input type="text" id="healthCondition" class="form-control"
+                                                    placeholder="" formControlName="healthCondition" [value]="selectedAnimal?.healthCondition" [disabled]="!isAddingAnimal">
+                                            </div>
+                                        </div>
+
+                                        <div class="row align-items-center">
+
+                                            <label for="lastVisit"
+                                                class="col-sm-4 col-form-label fw-semibold text-black text-nowrap">Dernière
+                                                visite: </label>
+                                            <div class="col-sm-8">
+                                                <input type="date" id="lastVisit" class="form-control" placeholder="" formControlName="lastVisit" [value]="selectedAnimal?.lastVisit"
+                                                       [disabled]="!isAddingAnimal">
+                                            </div>
+                                        </div>
+
+                                </div>
+                              <label for="notes"
+                                     class="col-sm-4 col-form-label fw-semibold text-black text-nowrap">Notes: </label>
+                                <textarea class="form-control bg-light fixed-size-textarea" rows="5" formControlName="notes" [value]="selectedAnimal?.notes" [disabled]="!isAddingAnimal"
+                                    placeholder="Entrez vos notes ici..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-row gap-2 w-100 pt-2" *ngIf="selectedAnimal">
+                          <button *ngIf="selectedAnimal && !isEditing && !isAdding"
+                                  class="btn bouton-voir-plus  flex-grow-1 " type="button"
+                                  (click)="onEditButtonClick()">Modifier</button>
+                          <button *ngIf="selectedAnimal && !isEditing && !isAdding"
+                                  class="btn bouton-voir-plus flex-grow-1 " type="button"
+                                  (click)="deleteAnimal(selectedAnimal?.id)">Supprimer</button>
+
+                          <button *ngIf="isEditing" class="btn bouton-voir-plus flex-grow-1 "
+                                  type="button" (click)="editAnimal(selectedAnimal)">Sauvegarder</button>
+                          <button *ngIf="isEditing" class="btn bouton-voir-plus flex-grow-1 "
+                                  type="button" (click)="cancel()">Annuler</button>
+
+                          <button *ngIf="isAdding" class="btn bouton-voir-plus flex-grow-1 "
+                                  type="submit">Ajouter</button>
+                          <button *ngIf="isAdding" class="btn bouton-voir-plus flex-grow-1 "
+                                  type="button" (click)="cancel()">Annuler</button>
+                        </div>
+
+
+                    </div>
+                  </form>
+            </div>
+        </div>
+
+      </div>
+
+    <!-- Section rendez-vous -->
+    <div class="row w-100">
+        <h3 class="border-bottom w-50">Ajout/Visualisation d'évènements</h3>
+        <div class="bg-primary shadow-sm rounded-2 w-100">
+            <div class="row justify-content-center p-4">
+                <!-- Section ajout de rendez-vous -->
+                <div class="col-sm bg-white rounded-2 shadow-sm p-4 d-flex me-5" style="min-height: 200px;">
+
+                  <!--------------------------------- FORM --------------------------------->
+                  <form [formGroup]="checkoutForm" (ngSubmit)="onSubmitAppointment()">
+
+                    <div class="d-flex flex-column justify-content-center gap-3 w-100">
+                        <div class="row gap-3">
+                            <!-- Colonne pour les champs 'Animal concerné' et 'Date et heure' -->
+                            <div class="col">
+                                <div class="d-flex flex-column gap-3">
+                                    <div class="row align-items-center">
+                                        <label for="animal-concerne"
+                                            class="col-sm-4 col-form-label fw-semibold text-black text-nowrap">Animal:</label>
+                                        <div class="col-sm-8" >
+                                          <select id="animal-concerne" class="form-select" formControlName="concernedAnimal" >
+                                            <option value="" selected>Veuillez sélectionner l'animal concerné</option>
+                                            <option *ngFor="let animal of animals" [value]=animal.id>{{ animal.name }}</option>
+                                          </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="row align-items-center">
+                                        <label for="date-heure"
+                                            class="col-sm-4 col-form-label fw-semibold text-black text-nowrap">Date et
+                                            heure:</label>
+                                        <div class="col-sm-8">
+                                            <input type="datetime-local" id="date-heure" class="form-control"
+                                                placeholder="Date et heure du rendez-vous" formControlName="appointmentDateTime">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Colonne pour les champs 'Type' et 'Lieu' -->
+                            <div class="col">
+                                <div class="d-flex flex-column gap-3">
+                                    <div class="row align-items-center">
+                                        <label for="type"
+                                            class="col-sm-4 col-form-label fw-semibold text-black">Type:</label>
+                                        <div class="col-sm-8">
+                                          <select id="type" class="form-select" formControlName="appointmentType">
+                                            <option value="" selected>Veuillez sélectionner le type du rendez-vous</option>
+                                            <option value="Consultation générale">Consultation générale</option>
+                                            <option value="Vaccination">Vaccination</option>
+                                            <option value="Vermifugation">Vermifugation</option>
+                                            <option value="Castration/Stérilisation">Castration/Stérilisation</option>
+                                            <option value="Soins dentaires">Soins dentaires</option>
+                                            <option value="Urgence">Urgence</option>
+                                            <option value="Toilettage">Toilettage</option>
+                                            <option value="Comportement">Comportement</option>
+                                            <option value="Physiothérapie">Physiothérapie</option>
+                                            <option value="Hydrothérapie">Hydrothérapie</option>
+                                          </select>
+                                        </div>
+                                    </div>
+                                    <div class="row align-items-center">
+                                        <label for="lieu"
+                                            class="col-sm-4 col-form-label fw-semibold text-black">Lieu:</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" id="lieu" class="form-control"
+                                                placeholder="Lieu du rendez-vous" formControlName="appointmentLocation">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Champ pour 'Notes' -->
+                        <div class="d-flex flex-column gap-2">
+                            <label for="notes" class="fw-semibold text-black">Notes:</label>
+                            <textarea id="notes" class="form-control bg-light fixed-size-textarea" rows="3"
+                                placeholder="Entrez la raison ici..." formControlName="appointmentNotes"></textarea>
+                        </div>
+
+                        <button class="btn bouton-voir-plus flex-grow-1" type="submit">Ajouter le rendez-vous</button>
+                        <button class="btn bouton-voir-plus  flex-grow-1 " type="button" (click)="cancel()">Annuler</button>
+
+
+                    </div>
+
+                  </form>
+
+                </div>
+
+
+
+
+                <!-- Section affichage des rendez-vous -->
+              <div class="col-sm bg-white rounded-2 shadow-sm p-4 ms-5" style="min-height: 200px;">
+
+                <ng-container *ngIf="!hasAnyAppointments()">
+                  <div class="alert alert-info text-center">
+                    Aucun rendez-vous à venir pour vos animaux!
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="animals">
+                  <div *ngFor="let animal of animals">
+                    <ng-container *ngIf="getAppointmentsForAnimal(animal.id).length > 0">
+                    <h5 class="m-0">Rendez-vous de {{ animal.name }}:</h5>
+                    <div class="h-100 w-100 rounded-2 p-4 d-flex flex-column gap-3">
+                      <ng-container *ngIf="appointments">
+                        <div *ngFor="let appointment of getAppointmentsForAnimal(animal.id)"    class="bg-white rounded-2 shadow-sm d-flex align-items-center p-3 gap-2 w-100">
+                          <ng-container *ngIf="appointment.animal.id === animal.id">
+                            <div class="col-auto">
+                              <img src="..\assets\images\horloge.png" width="40" height="auto" />
+                            </div>
+
+                            <div class="flex-grow-1 p-0 ">
+                              <p class="mb-1 fw-semi-bold">{{ appointment.type }}</p>
+                              <p class="text-muted mb-0">{{ appointment.dateTime | date:'mediumDate' }}</p>
+                              <p class="text-muted mb-0 fs-sm">Animal concerné: <span class="text-black">{{ animal.name }}</span></p>
+                              <ng-container *ngIf="showAppointmentDetails && appointment === selectedAppointment">
+                                <p class="text-muted mb-0 fs-sm ">Lieu: <span class="text-black">{{ appointment.location }}</span></p>
+                                <p class="text-muted mb-0 fs-sm">Notes: <span class="text-black">{{ appointment.notes }}</span></p>
+                              </ng-container>
+                              <button class="m-0 p-0 text-custom-blue btn btn-link text-custom-blue" style="background-color:transparent; border-color:transparent" (click)="toggleAppointmentDetails(appointment)">
+                                <p class="text-muted mb-0 fs-sm text-custom-blue">
+                                  {{ showAppointmentDetails && appointment === selectedAppointment ? 'Diminuer' : 'Détails' }}
+                                </p>
+                              </button>
+                            </div>
+
+                            <div class="ms-auto">
+                              <button (click)="deleteAppointment(appointment.id)" class="btn" style="background-color:transparent; border-color:transparent">
+                                <img src="..\assets\images\supprimer.png" width="40" height="auto" />
+                              </button>
+                            </div>
+                          </ng-container>
+                        </div>
+                      </ng-container>
+                    </div>
+                    </ng-container>
+
+
+
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+
+    </div>
+  </div>
+</main>
